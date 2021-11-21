@@ -3,9 +3,9 @@
 ### How to install and run
 
 #### **Requirements**
-- Node.js <=v14
-- npm <=v8
-- MongoDB Instance <=v4 
+- Node.js v14+
+- npm v8+
+- MongoDB Instance v4+ 
 
 For the database, [Atlas](https://www.mongodb.com/cloud/atlas/lp/try2-aterms) has a good free tier that's easy to setup.
 
