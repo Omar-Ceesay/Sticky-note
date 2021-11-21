@@ -1,0 +1,65 @@
+.draggable {
+    width: 14em;
+    height: 14em;
+    margin: 1rem 0 0 1rem;
+    color: white;
+    border-radius: 0.75em;
+    touch-action: none;
+    user-select: none;
+    transform: translate(0px, 0px);
+    display: inline-flex;
+}
+
+.draggable textarea{
+    margin: 4%;
+    height: auto;
+    border: none;
+    overflow: auto;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+}
+
+.fixed-action-btn {
+    padding: 0 !important;
+}
+
+.new {
+    /* -webkit-transform: scale(0);
+    transform: scale(0); */
+    -webkit-animation: transformer 0.2s ease-out 0s 1;
+    animation: transformer 0.2s ease-out 0s 1;
+}
+
+@-webkit-keyframes transformer {
+    from {
+        -webkit-transform: scale(0.1);
+    }
+    to {
+        -webkit-transform: scale(1);
+    }
+}
+@keyframes transformer {
+    from {
+        transform: scale(0.1);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.drag-1 {
+    background-color: #29e;
+    border: #1c78ba 1px solid;
+}
+.drag-2 {
+    background-color: rgb(238, 126, 34);
+    border: rgb(214, 114, 32) 1px solid;
+}
+
+#room { 
+    width: 100vw; 
+    height: 100vh;
+}

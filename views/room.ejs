@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="/materialize.min.css"  media="screen,projection"/>
+
+    <link type="text/css" rel="stylesheet" href="/room.css"  />
+</head>
+<body>
+    <div id="">
+        <% if (room) { %>
+            <nav>
+                <div class="nav-wrapper">
+                    <a href="" class="brand-logo center">Room "<%= room.name %>"</a>
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="" id="add-note">Add note</a></li>
+                        <li><a href="" id="remove-all">Remove all</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div id="room" name="<%= room.name %>">
+                <% if (room.notes && room.notes.length > 0) { %>
+                    <% room.notes.forEach(note => { %>
+                        <div class="draggable drag-1 " id="<%= note._id %>"
+                        style="<%=`transform: translate(${note.position[0]}px, ${note.position[1]}px); background-color: ${note.backgroundColor};`%>" 
+                        note-id=<%= note._id %> background-color="<%= note.backgroundColor %>"
+                        data-x="<%= note.position[0] %>" data-y="<%= note.position[1] %>">
+                            <textarea id="<%= note._id %>" ><%= note.text %></textarea>
+                            <!-- <i class="small material-icons">clear</i> -->
+                            <div class="fixed-action-btn">
+                                <a class="btn-floating btn-small red">
+                                    <i class="medium material-icons">mode_edit</i>
+                                </a>
+                                <ul>
+                                    <li><a class="btn-floating btn-small red deleteBtn"><i class="material-icons" name="<%= note._id %>">clear</i></a></li>
+                                    <li><a class="btn-floating btn-small yellow darken-1"><i class="material-icons">color_lens</i></a></li>
+                                    <!-- <li><input class="btn-floating btn-small tooltipped" 
+                                        style="background-color: #e66465;" type="color" 
+                                        value="#e66465" data-position="top" data-tooltip="Color-picker">
+                                    </input></li> -->
+                                </ul>
+                            </div>
+                        </div>
+                        <script>
+                            // Update text
+                            document.getElementById("<%= note._id %>").addEventListener('input', (e) => {
+                                // Prevent child propagation
+                                if( event.target.tagName !== "TEXTAREA") {
+                                    return;
+                                }
+
+                                fetch("/update/note", {
+                                method: "POST",
+                                // Having a JSON parsing error with the bodyparser middleware so I use the URL encoded version. 
+                                body: new URLSearchParams({
+                                        id: "<%= note._id %>",
+                                        text: e.target.value
+                                    })
+                                    })
+                                    .then(res => {
+                                        return res.json()
+                                    })
+                                    .then(data => {
+                                        console.log(data);
+                                });
+
+                            }); 
+                            
+                            // init the fixed-action-btn
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var elems = document.querySelectorAll('.fixed-action-btn');
+                                var instances = M.FloatingActionButton.init(elems, {
+                                    direction: 'right',
+                                    hoverEnabled: false,
+                                });
+
+                                // this is for the color picker
+                                // elems = document.querySelectorAll('.tooltipped');
+                                // instances = M.Tooltip.init(elems, {});
+                            });
+                        </script>
+                    <% }) %>
+                    <script>
+                        // Delete note 
+                        let btns = document.getElementsByClassName("deleteBtn")
+                        for (let i = 0; i < btns.length; i++) {
+                            const btn = btns[i];
+                            btn.addEventListener("click", function(e) {
+                                const noteId = e.target.getAttribute("name")
+                                console.log(noteId);
+                                document.getElementById(noteId).remove()
+
+                                fetch("/remove/note", {
+                                    method: "POST",
+                                    // Having a JSON parsing error with the bodyparser middleware so I use the URL encoded version. 
+                                    body: new URLSearchParams({
+                                        id: noteId,
+                                        room_id: document.getElementById("room").getAttribute("name")
+                                    })
+                                    })
+                                    .then(res => {
+                                        return res.json()
+                                    })
+                                    .then(data => {
+                                        console.log(data);
+                                });
+                            })
+                        }
+                    </script>
+                <% } %>
+            </div>
+        <% }else{ %>
+            <h1>Room couldn't find that room 😓</h1>
+        <% } %>
+    </div>      
+
+    <!--JavaScript at end of body for optimized loading-->
+    <!-- <script type="text/javascript" src="materialize.min.js"></script> -->
+
+    <script type="module">
+        import interact from 
+        'https://cdn.interactjs.io/v1.10.11/interactjs/index.js'
+        
+        interact('.item').draggable({
+          listeners: {
+            move (event) {
+              console.log(event.pageX,
+                          event.pageY)
+            }
+          }
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="module" src="/room.js"></script>
+</body>
+</html>
